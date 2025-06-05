@@ -1,8 +1,8 @@
 ﻿namespace Soltrix.Utils
 {
-    public static class ValidadorCPF
+    public static class Validador
     {
-        public static bool Validar(string cpf)
+        public static bool ValidarCPF(string cpf)
         {
             if (cpf.Length != 11 || !long.TryParse(cpf, out _))
                 return false;
@@ -27,5 +27,12 @@
 
             return cpf.EndsWith(digito1.ToString() + digito2.ToString());
         }
+
+        public static bool ValidarCEP(string cep)
+        {
+            return cep.Length == 8 && long.TryParse(cep, out _);
+        }
     }
-}
+    
+
+    }

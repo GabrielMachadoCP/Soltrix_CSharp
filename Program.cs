@@ -5,6 +5,7 @@ using Soltrix.Utils;
 using System;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 class Program
 {
@@ -67,11 +68,11 @@ class Program
         do
         {
             cpf = LerCampoObrigatorio("CPF (somente números)");
-            if (!ValidadorCPF.Validar(cpf))
+            if (!Validador.ValidarCPF(cpf))
             {
                 Console.WriteLine("CPF inválido. Tente novamente.");
             }
-        } while (!ValidadorCPF.Validar(cpf));
+        } while (!Validador.ValidarCPF(cpf));
 
         Console.Write("Data de nascimento (dd/mm/aaaa): ");
         DateTime dataNascimento;
@@ -83,11 +84,35 @@ class Program
         string senha = LerCampoObrigatorio("Senha");
 
         Console.WriteLine("\n--- Endereço ---");
+
+        string cep;
+        do
+        {
+            cep = LerCampoObrigatorio("CEP (somente números)");
+            if (!Validador.ValidarCEP(cep))
+            {
+                Console.WriteLine("CEP inválido. Digite exatamente 8 números (ex: 12345678).");
+            }
+        } while (!Validador.ValidarCEP(cep));
+
+        string rua;
+        rua = LerCampoObrigatorio("Rua");
+
+        int numero;
+        while (true)
+        {
+            Console.Write("Número: ");
+            if (int.TryParse(Console.ReadLine(), out numero) && numero > 0)
+                break;
+
+            Console.WriteLine("Número inválido. Digite um número inteiro positivo.");
+        }
+
         Endereco endereco = new()
         {
-            CEP = LerCampoObrigatorio("CEP"),
-            Rua = LerCampoObrigatorio("Rua"),
-            Numero = LerCampoObrigatorio("Número"),
+            CEP = cep,
+            Rua = rua,
+            Numero = numero,
             Bairro = LerCampoObrigatorio("Bairro"),
             Cidade = LerCampoObrigatorio("Cidade"),
             Estado = LerCampoObrigatorio("Estado (sigla)")
@@ -134,6 +159,7 @@ class Program
                 Console.Write("Deseja tentar novamente? (s/n): ");
                 tentarLogin = Console.ReadLine().ToLower() == "s";
             }
+            Console.Clear();
         }
 
         if (usuarioAutenticado != null)
@@ -156,6 +182,7 @@ class Program
             Console.WriteLine("2 - Ver histórico de eventos");
             Console.WriteLine("3 - Gerar backup");
             Console.WriteLine("4 - Ver dicas da Sol");
+            Console.WriteLine("5 - Calcular prejuízos do estabelecimento");
             Console.WriteLine("0 - Sair");
 
             Console.Write("Escolha uma opção: ");
@@ -175,6 +202,9 @@ class Program
                     break;
                 case "4":
                     MenuDicas();
+                    break;
+                case "5":
+                    CalcularPrejuizos(usuario);
                     break;
                 case "0":
                     continuar = false;
@@ -274,5 +304,25 @@ class Program
                 Console.WriteLine($"- {dica}");
             }
         }
+    }
+
+    static void CalcularPrejuizos(Usuario usuario)
+    {
+        if (!usuario.PossuiEstabelecimento)
+        {
+            Console.WriteLine($"{usuario.Nome}, você não possui estabelecimento!");
+            return;
+        }
+
+        var eventos = energiaService.ObterEventosPorUsuario(usuario.CPF);
+
+        if (eventos.Count == 0)
+        {
+            Console.WriteLine("Nenhuma queda de energia registrada para calcular prejuízo.");
+            return;
+        }
+
+        decimal prejuizoTotal = CalculadoraPrejuizo.CalcularPrejuizo(eventos);
+        Console.WriteLine($"Total estimado de prejuízo pelas quedas de energia: R$ {prejuizoTotal:F2}");
     }
 }
