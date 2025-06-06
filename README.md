@@ -10,7 +10,7 @@ Onde o calor vira potência
 ---
 
 ## Documento descritivo do projeto:
-[Link do Documento] :[(https://docs.google.com/document/d/1ION-ZlJLDRZeh8MAy2C9sj2bXQ-QciGbk2SR1C8mEPE/edit?usp=sharing)]
+**[Acessar Documento](https://docs.google.com/document/d/1ION-ZlJLDRZeh8MAy2C9sj2bXQ-QciGbk2SR1C8mEPE/edit?usp=sharing)**
 
 ---
 
