@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Soltrix.Models
+﻿namespace Soltrix.Models
 {
+    /// <summary>
+    /// Representa um endereço completo com informações de localização.
+    /// </summary>
     public class Endereco
     {
         public string CEP { get; set; }
@@ -15,7 +12,10 @@ namespace Soltrix.Models
         public string Cidade { get; set; }
         public string Estado { get; set; }
 
-        public override string ToString()
+        /// <summary>
+        /// Retorna a representação em string do endereço completo.
+        /// </summary>
+        public string ExibirEndereco()
         {
             return $"{Rua}, {Numero} - {Bairro}, {Cidade} - {Estado}, CEP: {CEP}";
         }

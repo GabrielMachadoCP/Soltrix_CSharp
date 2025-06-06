@@ -3,8 +3,15 @@ using System.Collections.Generic;
 
 namespace Soltrix.Services
 {
+    /// <summary>
+    /// Serviço responsável por fornecer dicas relacionadas a eventos de falta de energia.
+    /// </summary>
     public class DicaService
     {
+        /// <summary>
+        /// Obtém uma lista de dicas para serem seguidas antes da falta de energia.
+        /// </summary>
+        /// <returns>Lista de dicas para o período antes da falta de energia.</returns>
         public List<Dica> ObterDicasAntes()
         {
             return new List<Dica>
@@ -15,6 +22,10 @@ namespace Soltrix.Services
             };
         }
 
+        /// <summary>
+        /// Obtém uma lista de dicas para serem seguidas durante a falta de energia.
+        /// </summary>
+        /// <returns>Lista de dicas para o período durante a falta de energia.</returns>
         public List<Dica> ObterDicasDurante()
         {
             return new List<Dica>
@@ -25,6 +36,10 @@ namespace Soltrix.Services
             };
         }
 
+        /// <summary>
+        /// Obtém uma lista de dicas para serem seguidas depois da falta de energia.
+        /// </summary>
+        /// <returns>Lista de dicas para o período após a falta de energia.</returns>
         public List<Dica> ObterDicasDepois()
         {
             return new List<Dica>

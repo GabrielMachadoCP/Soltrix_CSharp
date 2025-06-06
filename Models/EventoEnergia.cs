@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace Soltrix.Models
+﻿namespace Soltrix.Models
 {
+    /// <summary>
+    /// Representa um evento de queda ou retorno de energia registrado por um usuário.
+    /// </summary>
     public class EventoEnergia
     {
         public Guid Id { get; set; } = Guid.NewGuid();

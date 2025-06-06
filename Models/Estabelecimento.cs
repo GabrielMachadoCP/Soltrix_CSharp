@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Soltrix.Models
+﻿namespace Soltrix.Models
 {
+    /// <summary>
+    /// Representa um estabelecimento comercial ou empresarial associado a um usuário.
+    /// </summary>
     public class Estabelecimento
     {
         public string Nome { get; set; }

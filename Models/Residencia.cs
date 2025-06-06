@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Soltrix.Models
+﻿namespace Soltrix.Models
 {
     using System;
 
+    /// <summary>
+    /// Representa uma residência cadastrada no sistema.
+    /// </summary>
     public class Residencia
     {
         public Guid Id { get; set; } = Guid.NewGuid();

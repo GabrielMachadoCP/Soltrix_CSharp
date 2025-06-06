@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Soltrix.Models
+﻿namespace Soltrix.Models
 {
 
+    /// <summary>
+    /// Representa um usuário do sistema Soltrix, contendo dados pessoais e informações de endereço.
+    /// </summary>
     public class Usuario
     {
         public Guid Id { get; set; } = Guid.NewGuid();

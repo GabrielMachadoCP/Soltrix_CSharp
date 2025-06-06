@@ -2,10 +2,7 @@
 using Soltrix.Services;
 using Soltrix.Services.Soltrix.Services;
 using Soltrix.Utils;
-using System;
 using System.Globalization;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 
 class Program
 {
@@ -14,6 +11,9 @@ class Program
     static BackupService backupService = new();
     static DicaService dicaService = new();
 
+    /// <summary>
+    /// Fluco principal do programa Soltrix.
+    /// </summary>
     static void Main()
     {
         try
@@ -36,38 +36,29 @@ class Program
         }
     }
 
+    /// <summary>
+    /// Mostra mensagem de boas-vindas ao usuário.
+    /// </summary>
     static void MostrarBoasVindas()
     {
         Console.WriteLine("=== BEM-VINDO À SOLTRIX ===");
         Console.WriteLine("Olá, seja parte da revolução energética com a Soltrix!");
     }
 
-    static string LerCampoObrigatorio(string label)
-    {
-        string valor;
-        do
-        {
-            Console.Write($"{label}: ");
-            valor = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(valor))
-            {
-                Console.WriteLine($"{label} é obrigatório. Tente novamente.");
-            }
-        } while (string.IsNullOrWhiteSpace(valor));
-
-        return valor;
-    }
-
+    /// <summary>
+    /// Realiza o processo de cadastro de um novo usuário, com validações.
+    /// </summary>
+    /// <returns>Retorna o objeto do usuário cadastrado.</returns>
     static Usuario CadastrarUsuario()
     {
         Console.WriteLine("\n=== CADASTRO DE NOVO USUÁRIO ===");
 
-        string nome = LerCampoObrigatorio("Nome");
+        string nome = Validador.LerCampoObrigatorio("Nome");
 
         string cpf;
         do
         {
-            cpf = LerCampoObrigatorio("CPF (somente números)");
+            cpf = Validador.LerCampoObrigatorio("CPF (somente números)");
             if (!Validador.ValidarCPF(cpf))
             {
                 Console.WriteLine("CPF inválido. Tente novamente.");
@@ -81,14 +72,15 @@ class Program
             Console.Write("Formato inválido. Digite novamente (dd/mm/aaaa): ");
         }
 
-        string senha = LerCampoObrigatorio("Senha");
+        string senha = Validador.LerCampoObrigatorio("Senha");
 
         Console.WriteLine("\n--- Endereço ---");
 
         string cep;
         do
         {
-            cep = LerCampoObrigatorio("CEP (somente números)");
+            cep = Validador.LerCampoObrigatorio("CEP (somente números)");
+            Console.Clear();
             if (!Validador.ValidarCEP(cep))
             {
                 Console.WriteLine("CEP inválido. Digite exatamente 8 números (ex: 12345678).");
@@ -96,7 +88,8 @@ class Program
         } while (!Validador.ValidarCEP(cep));
 
         string rua;
-        rua = LerCampoObrigatorio("Rua");
+        rua = Validador.LerCampoObrigatorio("Rua");
+        Console.Clear();
 
         int numero;
         while (true)
@@ -113,13 +106,12 @@ class Program
             CEP = cep,
             Rua = rua,
             Numero = numero,
-            Bairro = LerCampoObrigatorio("Bairro"),
-            Cidade = LerCampoObrigatorio("Cidade"),
-            Estado = LerCampoObrigatorio("Estado (sigla)")
+            Bairro = Validador.LerCampoObrigatorio("Bairro"),
+            Cidade = Validador.LerCampoObrigatorio("Cidade"),
+            Estado = Validador.LerCampoObrigatorio("Estado (sigla)")
         };
 
-        Console.Write("Possui estabelecimento? (s/n): ");
-        bool possuiEstabelecimento = Console.ReadLine().ToLower() == "s";
+        bool possuiEstabelecimento = Validador.LerConfirmacaoSimNao("Possui estabelecimento?");
 
         Usuario novoUsuario = new()
         {
@@ -137,6 +129,10 @@ class Program
         return novoUsuario;
     }
 
+    /// <summary>
+    /// Realiza o processo de login do usuário, com tentativa múltipla.
+    /// </summary>
+    /// <returns>Usuário autenticado ou null se falhar.</returns>
     static Usuario FazerLogin()
     {
         Usuario usuarioAutenticado = null;
@@ -156,8 +152,7 @@ class Program
             if (usuarioAutenticado == null)
             {
                 Console.WriteLine("Login inválido.");
-                Console.Write("Deseja tentar novamente? (s/n): ");
-                tentarLogin = Console.ReadLine().ToLower() == "s";
+                tentarLogin = Validador.LerConfirmacaoSimNao("Deseja tentar novamente?");
             }
             Console.Clear();
         }
@@ -171,6 +166,10 @@ class Program
         return usuarioAutenticado;
     }
 
+    /// <summary>
+    /// Mostra o menu principal com as funcionalidades disponíveis.
+    /// </summary>
+    /// <param name="usuario">Usuário autenticado.</param>
     static void MostrarMenu(Usuario usuario)
     {
         bool continuar = true;
@@ -178,14 +177,15 @@ class Program
         while (continuar)
         {
             Console.WriteLine("\n--- MENU PRINCIPAL SOLTRIX ---");
-            Console.WriteLine("1 - Registrar queda de energia");
-            Console.WriteLine("2 - Ver histórico de eventos");
-            Console.WriteLine("3 - Gerar backup");
-            Console.WriteLine("4 - Ver dicas da Sol");
-            Console.WriteLine("5 - Calcular prejuízos do estabelecimento");
+            Console.WriteLine("\n1 - Registrar queda de energia");
+            Console.WriteLine("2 - Ver previsões de falhas energéticas na regiao");
+            Console.WriteLine("3 - Ver histórico de eventos");
+            Console.WriteLine("4 - Gerar backup das quedas de energia");
+            Console.WriteLine("5 - Ver dicas da Sol");
+            Console.WriteLine("6 - Calcular prejuízos do estabelecimento\n");
             Console.WriteLine("0 - Sair");
 
-            Console.Write("Escolha uma opção: ");
+            Console.Write("\nEscolha uma opção: ");
             string opcao = Console.ReadLine();
             Console.Clear();
 
@@ -195,15 +195,18 @@ class Program
                     RegistrarEvento(usuario);
                     break;
                 case "2":
-                    VerHistorico(usuario);
+                    VerPrevisoes(usuario);
                     break;
                 case "3":
-                    GerarBackup(usuario);
+                    VerHistorico(usuario);
                     break;
                 case "4":
-                    MenuDicas();
+                    GerarBackup(usuario);
                     break;
                 case "5":
+                    MenuDicas();
+                    break;
+                case "6":
                     CalcularPrejuizos(usuario);
                     break;
                 case "0":
@@ -217,6 +220,10 @@ class Program
         }
     }
 
+    /// <summary>
+    /// Registra um evento de queda de energia para o usuário.
+    /// </summary>
+    /// <param name="usuario">Usuário que está registrando o evento.</param>
     static void RegistrarEvento(Usuario usuario)
     {
         EventoEnergia evento = new()
@@ -227,13 +234,30 @@ class Program
             Fonte = "Usuário"
         };
 
-        Console.Write("Motivo da queda de energia: (Onda de Calor, Tempestade, Manutencao...)");
+        Console.Write("Motivo da queda de energia: (Onda de Calor, Tempestade, Manutencao...) ");
         evento.Motivo = Console.ReadLine();
 
         energiaService.RegistrarEvento(evento);
         Console.WriteLine("Evento registrado com sucesso.");
     }
 
+    /// <summary>
+    /// Exibe previsão de falhas energéticas baseada em porcentagem aleatória.
+    /// </summary>
+    /// <param name="usuario">Usuário autenticado.</param>
+    static void VerPrevisoes(Usuario usuario)
+    {
+        Random random = new Random();
+        int previsaoPorcentagem = random.Next(0, 101);
+
+        Console.WriteLine($"Olá {usuario.Nome}, as previsões Soltrix de falhas energéticas para o seu endereco, " +
+            $"\n{usuario.Endereco.ExibirEndereco()} é de: {previsaoPorcentagem}% de chance de falha nos próximos dias.");
+    }
+
+    /// <summary>
+    /// Mostra o histórico de eventos de queda de energia do usuário.
+    /// </summary>
+    /// <param name="usuario">Usuário autenticado.</param>
     static void VerHistorico(Usuario usuario)
     {
         var eventos = energiaService.ObterEventosPorUsuario(usuario.CPF);
@@ -251,6 +275,10 @@ class Program
         }
     }
 
+    /// <summary>
+    /// Gera um backup dos eventos de energia do usuário no formato JSON.
+    /// </summary>
+    /// <param name="usuario">Usuário autenticado.</param>
     static void GerarBackup(Usuario usuario)
     {
         var dados = energiaService.ObterEventosPorUsuario(usuario.CPF);
@@ -259,19 +287,22 @@ class Program
         Console.WriteLine($"Backup salvo em: {arquivo}");
     }
 
+    /// <summary>
+    /// Exibe menu com dicas antes, durante e após a falta de energia.
+    /// </summary>
     static void MenuDicas()
     {
         bool voltar = false;
 
         while (!voltar)
         {
-            Console.WriteLine("\n--- DICAS DA SOL ---");
+            Console.WriteLine("\n--- DICAS DA SOL ---\n");
             Console.WriteLine("1 - Antes da falta de energia");
             Console.WriteLine("2 - Durante a falta de energia");
             Console.WriteLine("3 - Após a falta de energia");
-            Console.WriteLine("4 - Voltar");
+            Console.WriteLine("\n4 - Voltar");
 
-            Console.Write("Escolha uma opção: ");
+            Console.Write("\nEscolha uma opção: ");
             string opcao = Console.ReadLine();
             Console.Clear();
 
@@ -281,15 +312,15 @@ class Program
             {
                 case "1":
                     dicas = dicaService.ObterDicasAntes();
-                    Console.WriteLine("DICAS ANTES DA FALTA DE ENERGIA:");
+                    Console.WriteLine("DICAS ANTES DA FALTA DE ENERGIA:\n");
                     break;
                 case "2":
                     dicas = dicaService.ObterDicasDurante();
-                    Console.WriteLine("DICAS DURANTE A FALTA DE ENERGIA:");
+                    Console.WriteLine("DICAS DURANTE A FALTA DE ENERGIA:\n");
                     break;
                 case "3":
                     dicas = dicaService.ObterDicasDepois();
-                    Console.WriteLine("DICAS APÓS A FALTA DE ENERGIA:");
+                    Console.WriteLine("DICAS APÓS A FALTA DE ENERGIA:\n");
                     break;
                 case "4":
                     voltar = true;
@@ -306,6 +337,10 @@ class Program
         }
     }
 
+    /// <summary>
+    /// Calcula prejuízos estimados do estabelecimento com base nos eventos de queda de energia.
+    /// </summary>
+    /// <param name="usuario">Usuário autenticado.</param>
     static void CalcularPrejuizos(Usuario usuario)
     {
         if (!usuario.PossuiEstabelecimento)

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Soltrix.Models
+﻿namespace Soltrix.Models
 {
     using System;
 
+    /// <summary>
+    /// Representa um backup contendo dados salvos do sistema.
+    /// </summary>
     public class Backup
     {
         public Guid Id { get; set; } = Guid.NewGuid();
