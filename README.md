@@ -9,6 +9,11 @@ Onde o calor vira potência
 
 ---
 
+## Documento descritivo do projeto:
+[Link do Documento] :[(https://docs.google.com/document/d/1ION-ZlJLDRZeh8MAy2C9sj2bXQ-QciGbk2SR1C8mEPE/edit?usp=sharing)]
+
+---
+
 ## 💡 Explicação e Finalidade do Programa
 
 **Soltrix** é um sistema voltado à gestão e prevenção de crises energéticas, com foco especial em regiões impactadas 
